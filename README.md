@@ -275,3 +275,13 @@ ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$  kubectl exec -it
 Defaulted container "nginx-fork" out of: nginx-fork, wget-index-html (init)
 The new episode 8 of From airs on June 14, 2026.
 ```
+### 5. kubernetes-security
+
+- `minikube delete && minikube start`
+- `cd kubernetes-security`
+- `kubectl apply -f namespace.yaml`
+- `kubectl apply -f security.yaml`
+- `kubectl apply -f config-map.yaml`
+- `kubectl apply -f deployment.yaml`
+- `kubectl port-forward -n homework deployment/angie-deployment 8080:8000`
+- `curl http://localhost:8080/metrics.html`
