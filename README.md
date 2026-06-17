@@ -277,11 +277,43 @@ The new episode 8 of From airs on June 14, 2026.
 ```
 ### 5. kubernetes-security
 
+
+### Контейнерная часть
 - `minikube delete && minikube start`
 - `cd kubernetes-security`
 - `kubectl apply -f namespace.yaml`
 - `kubectl apply -f security.yaml`
 - `kubectl apply -f config-map.yaml`
 - `kubectl apply -f deployment.yaml`
-- `kubectl port-forward -n homework deployment/angie-deployment 8080:8000`
-- `curl http://localhost:8080/metrics.html`
+
+### Часть с генерацией kubeconfig ( выполнять после первой части)
+
+- `cd temp`
+- `kubectl create token cd -n homework --duration 24h > token`
+- `export API_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')`
+- `echo $API_SERVER`
+- `kubectl get configmap kube-root-ca.crt -n kube-public -o jsonpath='{.data.ca\.crt}' > cluster-ca.crt`
+- `cat cluster-ca.crt`
+
+- Генерация kubeconfig:
+
+```
+kubectl config set-cluster homework-cluster \
+  --server=$API_SERVER \
+  --certificate-authority=cluster-ca.crt \
+  --embed-certs=true \
+  --kubeconfig=cd.kubeconfig
+
+kubectl config set-credentials cd \
+  --token=$(cat token) \
+  --kubeconfig=cd.kubeconfig
+
+kubectl config set-context cd-context \
+  --cluster=homework-cluster \
+  --user=cd \
+  --namespace=homework \
+  --kubeconfig=cd.kubeconfig
+
+kubectl config use-context cd-context --kubeconfig=cd.kubeconfig
+```
+- `kubectl --kubeconfig=cd.kubeconfig get pods -n homework`
