@@ -1,0 +1,51 @@
+namespace: homework
+
+replicaCount: 3
+
+githubPage: https://github.com/bralbral
+
+container:
+  name: nginx-fork
+
+image:
+  repository: docker.angie.software/angie
+  tag: 1.11.6-minimal
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+probes:
+  enabled: true
+
+  readiness:
+    path: /index.html
+
+ingress:
+  enabled: false
+  host: homework.local
+
+initContainers:
+  wget:
+    image:
+      repository: busybox
+      tag: 1.38.0
+
+angieConfig: |
+  server {
+      listen 8000;
+
+      root /homework;
+      index index.html;
+
+      location / {
+          try_files $uri $uri/ =404;
+      }
+  }
+
+redis:
+  architecture: standalone
+  auth:
+    enabled: false

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ include "homework-app.fullname" . }}
+  namespace: {{ .Values.namespace }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: {{ include "homework-app.name" . }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "homework-app.name" . }}
+
+    spec:
+
+      initContainers:
+
+        - name: wget-index-html
+
+          image: "{{ .Values.initContainers.wget.image.repository }}:{{ .Values.initContainers.wget.image.tag }}"
+
+          command:
+            - wget
+            - "-O"
+            - "/init/index.html"
+            - {{ .Values.githubPage }}
+
+          volumeMounts:
+            - name: shared-index-html
+              mountPath: /init
+
+      containers:
+
+        - name: {{ .Values.container.name }}
+
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+
+          volumeMounts:
+            - name: shared-index-html
+              mountPath: /homework
+
+            - name: angie-config
+              mountPath: /etc/angie/http.d/default.conf
+              subPath: default.conf
+
+{{- if .Values.probes.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.service.targetPort }}
+
+            initialDelaySeconds: 3
+            periodSeconds: 5
+{{- end }}
+
+      volumes:
+
+        - name: shared-index-html
+          emptyDir: {}
+
+        - name: angie-config
+          configMap:
+            name: {{ include "homework-app.fullname" . }}-config

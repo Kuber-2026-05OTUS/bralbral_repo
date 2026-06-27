@@ -317,3 +317,60 @@ kubectl config set-context cd-context \
 kubectl config use-context cd-context --kubeconfig=cd.kubeconfig
 ```
 - `kubectl --kubeconfig=cd.kubeconfig get pods -n homework`
+
+
+### 6. kubernetes-templating
+
+- `minikube delete && minikube start`
+- `cd kubernetes-templating`
+
+
+- ```
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+
+```
+
+- `helm create homework-app`
+
+
+
+- ```
+cd homework-app
+
+rm templates/*.yaml
+rm templates/tests/*
+```
+
+
+- `helm dependency update` ( for redis repo)
+
+- `helm lint .`
+- `helm template homework .`
+- `helm install homework . -n homework --create-namespace`
+
+- `helm status homework -n homework`
+
+- `helm list -n homework`
+- `helm upgrade homework . --set replicaCount=5`
+
+- `helm history homework`
+
+- ```
+helm upgrade homework . \
+  --set image.repository=docker.angie.software/angie \
+  --set image.tag=1.12.0
+```
+
+- `helm rollback homework 2`
+
+- `helm get manifest homework`
+
+- `helm install homework . --dry-run`
+
+- `helm get values homework`
+
+- `helm get values homework --all`
+
+- `helm uninstall homework -n homework`
