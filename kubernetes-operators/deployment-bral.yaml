@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-operator
+  name: bral-operator
   namespace: default
 spec:
   replicas: 1
