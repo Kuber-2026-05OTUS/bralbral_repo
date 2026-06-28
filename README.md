@@ -1110,7 +1110,8 @@ Visit https://github.com/prometheus-operator/kube-prometheus for instructions on
 kubectl apply -f namespace.yaml
 kubectl apply -f configmap.yaml
 kubectl apply -f deployment.yaml
-kubectl apply -f namespace.yaml
+kubectl apply -f service.yaml
+kubectl apply -f serviceMonitor.yaml
 
 ```
 kubectl auth can-i list servicemonitors --as=system:serviceaccount:monitoring:prometheus-kube-prometheus-operator -n homework
