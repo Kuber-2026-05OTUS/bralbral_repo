@@ -909,3 +909,39 @@ kubectl get pv | grep mysql
 ```
 
 #### 3-ая часть
+
+##### develop
+
+- окружение 
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+- реки
+
+```
+
+
+```
+
+
+
+
+
+
+- cd `kubernetes-operators`
+
+
+- билд имаджа для оператора
+`docker build -t bral-operator:latest ./bral-operator/`
+
+- deploy
+
+```bash
+
+kubectl apply -f crd.yaml
+kubectl apply -f security.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment-bral.yaml
+
+```

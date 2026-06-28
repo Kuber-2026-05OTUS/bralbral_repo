@@ -1,0 +1,10 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY operator.py .
+
+CMD ["kopf", "run", "bral-operator.py", "--namespace=default", "--cluster-wide"]
