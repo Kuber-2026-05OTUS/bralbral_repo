@@ -5,5 +5,3 @@ metadata:
 provisioner: k8s.io/minikube-hostpath
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
-
-

@@ -40,7 +40,7 @@ rules:
     resources: ["events"]
     verbs: ["create", "patch", "update"]
 
-  # после этого ворнинг пропал в логах 
+  # после этого ворнинг пропал в логах
   # WARNING Not enough permissions to watch for resources: changes (creation/deletion/updates) will not be noticed; the resources are ...
   - apiGroups: ["*"]
     resources: ["*"]

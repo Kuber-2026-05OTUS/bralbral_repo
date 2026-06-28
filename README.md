@@ -1,4 +1,4 @@
-# Репозиторий для выполнения домашних заданий курса "Инфраструктурная платформа на основе Kubernetes-2026-05" 
+# Репозиторий для выполнения домашних заданий курса "Инфраструктурная платформа на основе Kubernetes-2026-05"
 
 
 ## Useful commands
@@ -143,7 +143,7 @@ traefik   traefik.io/gateway-controller   True       81s
 - `kubectl apply -f gateway.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f gateway.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f gateway.yaml
 gateway.gateway.networking.k8s.io/homework-gateway created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get gateway
 NAME               CLASS     ADDRESS   PROGRAMMED   AGE
@@ -153,7 +153,7 @@ homework-gateway   traefik                          12s
 - `kubectl apply -f service.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f service.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f service.yaml
 service/angie-service created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get svc
 NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
@@ -164,7 +164,7 @@ angie-service   ClusterIP   10.108.71.217   <none>        8000/TCP   2s
 - `kubectl apply -f httpRoute.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f httpRoute.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f httpRoute.yaml
 httproute.gateway.networking.k8s.io/homework-route created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get httproute
 NAME             HOSTNAMES           AGE
@@ -229,7 +229,7 @@ server {
     location / {
         try_files $uri $uri/ =404;
     }
-    
+
 }
 ```
 
@@ -264,7 +264,7 @@ No resources found in homework namespace.
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl get pvc
 NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
 homework-pvc   Bound    pvc-b5b9fadd-9cfe-416f-bb9a-2d0381f685b6   1Gi        RWO            homework-hostpath   <unset>                 3m53s
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl apply -f deployment.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl apply -f deployment.yaml
 deployment.apps/angie-deployment created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl get pods
 NAME                               READY   STATUS    RESTARTS   AGE
@@ -552,7 +552,7 @@ WARNING: There are "resources" sections in the chart not set. Using "resourcesPr
   - defaultInitContainers.prepareConfig.resources
 +info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 Listing releases matching ^kafka-dev$
-kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0
 Release "kafka-prod" does not exist. Installing it now.
 NAME: kafka-prod
 LAST DEPLOYED: Sat Jun 27 20:55:38 2026
@@ -627,7 +627,7 @@ Retagged images:
 WARNING: Rolling tag detected (bitnami/kafka:3.5.2), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html
 Listing releases matching ^kafka-prod$
-kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0
 
 ========== Updated Releases ==========
 NAME         NAMESPACE   CHART           VERSION   DURATION
@@ -645,9 +645,9 @@ helm search repo bitnami/kafka --versions
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$ helm list -n prod
 helm list -n dev
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0
 ```
 
 
@@ -666,7 +666,7 @@ kafka-prod-controller-headless   ClusterIP   None            <none>        9094/
 NAME                            TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                      AGE
 kafka-dev                       ClusterIP   10.97.84.40   <none>        9092/TCP                     2m19s
 kafka-dev-controller-headless   ClusterIP   None          <none>        9094/TCP,9092/TCP,9093/TCP   2m19s
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$ 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$
 
 ```
 
@@ -904,15 +904,15 @@ kubectl get pv | grep mysql
 - Чек удаления
 ```bash
 kubectl delete mysql mysql-demo -n default
-kubectl get deploy,svc,pvc -n default | grep mysql 
-kubectl get pv | grep mysql                       
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
 ```
 
 #### 3-ая часть
 
 ##### develop
 
-- окружение 
+- окружение
 ```
 python3 -m venv .venv
 source .venv/bin/activate

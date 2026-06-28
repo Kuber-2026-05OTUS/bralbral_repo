@@ -26,7 +26,7 @@ spec:
         ports:
         - containerPort: 8000
         volumeMounts:
-        - name: shared-data 
+        - name: shared-data
           mountPath: /homework
         - name: angie-config
           mountPath: /etc/angie/http.d/default.conf
@@ -62,7 +62,7 @@ spec:
       - name: shared-data
         persistentVolumeClaim:
           claimName: homework-pvc
-      - name: angie-config 
+      - name: angie-config
         configMap:
           name: config
       - name: homework-conf

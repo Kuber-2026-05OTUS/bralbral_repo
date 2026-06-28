@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app: angie
-      
+
   template:
     metadata:
       labels:
@@ -29,11 +29,11 @@ spec:
       containers:
       - name: nginx-fork
         image: docker.angie.software/angie:1.11.5-minimal
-        # image: docker.angie.software/angie:1.11.6-minimal 
+        # image: docker.angie.software/angie:1.11.6-minimal
         ports:
         - containerPort: 8000
         volumeMounts:
-        
+
         - name: shared-index-html
           mountPath: /homework
 
@@ -80,6 +80,3 @@ spec:
       - name: angie-config
         configMap:
           name: angie-config
-
-
-      

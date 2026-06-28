@@ -28,4 +28,4 @@ sasl:
 
 
 controller:
-  replicaCount: 5 
+  replicaCount: 5
