@@ -941,6 +941,7 @@ kubectl apply -f object-crd.yaml
 ```
 kopf run bral-operator/bral-operator.py
 ```
+#### deploy
 
 - deploy внутри миникуба
 
