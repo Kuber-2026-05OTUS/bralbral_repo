@@ -677,5 +677,14 @@ helmfile destroy
 
 ### 7. kubernetes-operators
 
+#### 1-ая часть
 - `minikube delete && minikube start`
-- `cd kubernetes-security`
+- `cd kubernetes-operators`
+- ```
+kubectl apply -f crd.yaml
+kubectl apply -f security.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment.yaml
+```
+
+
