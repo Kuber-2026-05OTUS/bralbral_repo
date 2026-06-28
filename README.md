@@ -673,3 +673,9 @@ ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$
 
 helmfile destroy
 ```
+
+
+### 7. kubernetes-operators
+
+- `minikube delete && minikube start`
+- `cd kubernetes-security`
