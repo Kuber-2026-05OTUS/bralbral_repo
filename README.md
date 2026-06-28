@@ -830,8 +830,82 @@ mysql-demo-pv   1Gi        RWO            Retain           Bound    default/mysq
 
 Проверка
 
-```
+```bash
 kubectl get deploy,svc,pvc -n default | grep mysql
 kubectl get pv | grep mysql
 ```
 
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pv | grep mysql
+No resources found
+```
+
+#### 2-ая часть
+
+- Деплой
+
+```bash
+minikube delete && minikube start
+cd kubernetes-operators
+kubectl apply -f crd.yaml
+kubectl apply -f security-minimal.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment.yaml
+```
+
+- Чек ошибок
+
+```bash
+kubectl logs -n default deployment/mysql-operator --tail=50
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/mysql-operator --tail=50
+/usr/local/lib/python3.10/site-packages/kopf/_core/reactor/running.py:179: FutureWarning: Absence of either namespaces or cluster-wide flag will become an error soon. For now, switching to the cluster-wide mode for backward compatibility.
+  warnings.warn("Absence of either namespaces or cluster-wide flag will become an error soon."
+[2026-06-28 09:10:40,717] kopf._core.engines.a [INFO    ] Initial authentication has been initiated.
+[2026-06-28 09:10:40,718] kopf.activities.auth [INFO    ] Activity 'login_via_client' succeeded.
+[2026-06-28 09:10:40,718] kopf._core.engines.a [INFO    ] Initial authentication has finished.
+[2026-06-28 09:10:40,946] kopf.objects         [INFO    ] [default/mysql-demo] Creating pv, pvc for mysql data and svc...
+[2026-06-28 09:10:40,963] kopf.objects         [INFO    ] [default/mysql-demo] Creating mysql deployment...
+[2026-06-28 09:10:40,977] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:10:50,992] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:01,004] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:11,019] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:21,033] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:31,048] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+```
+
+```bash
+kubectl logs -n default deployment/mysql-demo --tail=50
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/mysql-demo --tail=50
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Initializing database files
+2026-06-28T09:11:46.957615Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T09:11:46.957682Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.46) initializing of server in progress as process 81
+2026-06-28T09:11:46.962279Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T09:11:47.515407Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+```
+
+
+- Чек созданных ресурсов
+
+
+```bash
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
+```
+
+- Чек удаления
+```bash
+kubectl delete mysql mysql-demo -n default
+kubectl get deploy,svc,pvc -n default | grep mysql 
+kubectl get pv | grep mysql                       
+```
+
+#### 3-ая часть
