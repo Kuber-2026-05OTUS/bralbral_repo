@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ include "homework-app.fullname" . }}
+  namespace: {{ .Values.namespace }}
+
+spec:
+
+  type: {{ .Values.service.type }}
+
+  selector:
+    app: {{ include "homework-app.name" . }}
+
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}

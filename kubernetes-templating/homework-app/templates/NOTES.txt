@@ -1,0 +1,13 @@
+Release {{ .Release.Name }} installed successfully.
+
+Application URL:
+
+http://{{ include "homework-app.fullname" . }}.{{ .Values.namespace }}.svc.cluster.local
+
+Check pods:
+
+kubectl get pods -n {{ .Values.namespace }}
+
+Check service:
+
+kubectl get svc -n {{ .Values.namespace }}
