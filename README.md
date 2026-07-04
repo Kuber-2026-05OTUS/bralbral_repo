@@ -1154,3 +1154,183 @@ kubectl delete pod -n monitoring prometheus-kube-prometheus-operator-65dd99d994-
 
 После этого конфиг должен обновится.
 
+
+
+
+
+
+
+### 9. kubernetes-logging
+
+Установка кластера [run-cluster.yaml](run-cluster.md)
+
+# поменить ноду тейнтом
+
+kubectl label node worker2 node-role=infra
+kubectl taint node worker2 node-role=infra:NoSchedule
+
+
+# Minio deploy standalone
+
+```
+cd kubernetes-logging
+kubectl create namespace minio
+kubectl apply -f ./minio/pvc.yaml
+kubectl apply -f ./minio/deployment.yaml
+kubectl apply -f ./minio/svc.yaml
+```
+
+```
+kubectl -n minio port-forward svc/minio 9001:9001
+```
+
+
+
+
+# Loki install standalony by helm
+
+cd kubernetes-logging
+helm repo add grafana-community https://grafana-community.github.io/helm-charts
+helm repo update
+helm install loki grafana-community/loki -f ./charts/grafana-loki/values.yaml -n loki --create-namespace
+
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-logging$ helm install loki grafana-community/loki -f ./charts/grafana-loki/values.yaml -n loki --create-namespace
+NAME: loki
+LAST DEPLOYED: Sat Jul  4 16:45:35 2026
+NAMESPACE: loki
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+***********************************************************************
+ Welcome to Grafana Loki
+ Chart version: 18.4.0
+ Chart Name: loki
+ Loki version: 3.7.3
+***********************************************************************
+
+** Please be patient while the chart is being deployed **
+
+Tip:
+
+  Watch the deployment status using the command: kubectl get pods -w --namespace loki
+
+If pods are taking too long to schedule make sure pod affinity can be fulfilled in the current cluster.
+
+***********************************************************************
+Installed components:
+***********************************************************************
+* loki
+
+Loki has been deployed as a single binary.
+This means a single pod is handling reads and writes. You can scale that pod vertically by adding more CPU and memory resources.
+
+
+***********************************************************************
+Sending logs to Loki
+***********************************************************************
+
+Loki has been configured with a gateway (nginx) to support reads and writes from a single component.
+
+You can send logs from inside the cluster using the cluster DNS:
+
+http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+
+You can test to send data from outside the cluster by port-forwarding the gateway to your local machine:
+
+  kubectl port-forward --namespace loki svc/loki-gateway 3100:80 &
+
+And then using http://127.0.0.1:3100/loki/api/v1/push URL as shown below:
+
+```
+curl -H "Content-Type: application/json" -XPOST -s "http://127.0.0.1:3100/loki/api/v1/push"  \
+--data-raw "{\"streams\": [{\"stream\": {\"job\": \"test\"}, \"values\": [[\"$(date +%s)000000000\", \"fizzbuzz\"]]}]}"
+```
+
+Then verify that Loki did receive the data using the following command:
+
+```
+curl "http://127.0.0.1:3100/loki/api/v1/query_range" --data-urlencode 'query={job="test"}' | jq .data.result
+```
+
+***********************************************************************
+Connecting Grafana to Loki
+***********************************************************************
+
+If Grafana operates within the cluster, you'll set up a new Loki datasource by utilizing the following URL:
+
+http://loki-gateway.loki.svc.cluster.local/
+```
+
+
+# promtail
+
+```
+helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
+```
+
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-logging$ helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
+level=WARN msg="this chart is deprecated"
+NAME: promtail
+LAST DEPLOYED: Sat Jul  4 17:00:52 2026
+NAMESPACE: promtail
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+***********************************************************************
+ Welcome to Grafana Promtail
+ Chart version: 6.17.1
+ Promtail version: 3.5.1
+***********************************************************************
+
+Verify the application is working by running these commands:
+* kubectl --namespace promtail port-forward daemonset/promtail 3101
+* curl http://127.0.0.1:3101/metrics
+
+
+# grafana
+
+```
+kubectl apply -f ./charts/grafana/ns.yaml
+kubectl apply -f ./charts/grafana/pvc.yaml
+helm install grafana grafana/grafana -n grafana  -f ./charts/grafana/values.yaml
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-logging$ helm install grafana grafana/grafana -n grafana  -f ./charts/grafana/values.yaml
+level=WARN msg="this chart is deprecated"
+NAME: grafana
+LAST DEPLOYED: Sat Jul  4 17:11:26 2026
+NAMESPACE: grafana
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get your 'admin' user password by running:
+
+   kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+
+2. The Grafana server can be accessed via port 80 on the following DNS name from within your cluster:
+
+   grafana.grafana.svc.cluster.local
+
+   Get the Grafana URL to visit by running these commands in the same shell:
+     export POD_NAME=$(kubectl get pods --namespace grafana -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}")
+     kubectl --namespace grafana port-forward $POD_NAME 3000
+
+3. Login with the password from step 1 and the username: admin
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm list -A
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1     
+loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3      
+promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1    
+```

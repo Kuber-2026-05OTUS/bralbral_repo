@@ -81,3 +81,22 @@ kubeadm join 192.168.122.201:6443 --token ealsoo.cemkxjseshcmqfri --discovery-to
 kubectl get nodes -o wide
 kubectl get pods -A
 ```
+
+# StorageClass (CSI=container storage interface)
+`kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml`
+
+## Check
+
+`kubectl get storageclass`
+
+### Set default
+```
+ubuntu@ubuntu-MS-7C52:~$ kubectl get sc
+NAME         PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+local-path   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  4m8s
+ubuntu@ubuntu-MS-7C52:~$ kubectl patch storageclass <имя_storage_class> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+bash: имя_storage_class: No such file or directory
+ubuntu@ubuntu-MS-7C52:~$ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+storageclass.storage.k8s.io/local-path patched
+ubuntu@ubuntu-MS-7C52:~$ 
+```
