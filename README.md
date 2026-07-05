@@ -1155,11 +1155,6 @@ kubectl delete pod -n monitoring prometheus-kube-prometheus-operator-65dd99d994-
 После этого конфиг должен обновится.
 
 
-
-
-
-
-
 ### 9. kubernetes-logging
 
 Установка кластера [run-cluster.yaml](run-cluster.md)
