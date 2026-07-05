@@ -1,4 +1,4 @@
-# Репозиторий для выполнения домашних заданий курса "Инфраструктурная платформа на основе Kubernetes-2026-05" 
+# Репозиторий для выполнения домашних заданий курса "Инфраструктурная платформа на основе Kubernetes-2026-05"
 
 
 ## Useful commands
@@ -143,7 +143,7 @@ traefik   traefik.io/gateway-controller   True       81s
 - `kubectl apply -f gateway.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f gateway.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f gateway.yaml
 gateway.gateway.networking.k8s.io/homework-gateway created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get gateway
 NAME               CLASS     ADDRESS   PROGRAMMED   AGE
@@ -153,7 +153,7 @@ homework-gateway   traefik                          12s
 - `kubectl apply -f service.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f service.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f service.yaml
 service/angie-service created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get svc
 NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
@@ -164,7 +164,7 @@ angie-service   ClusterIP   10.108.71.217   <none>        8000/TCP   2s
 - `kubectl apply -f httpRoute.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f httpRoute.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl apply -f httpRoute.yaml
 httproute.gateway.networking.k8s.io/homework-route created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get httproute
 NAME             HOSTNAMES           AGE
@@ -229,7 +229,7 @@ server {
     location / {
         try_files $uri $uri/ =404;
     }
-    
+
 }
 ```
 
@@ -264,7 +264,7 @@ No resources found in homework namespace.
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl get pvc
 NAME           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
 homework-pvc   Bound    pvc-b5b9fadd-9cfe-416f-bb9a-2d0381f685b6   1Gi        RWO            homework-hostpath   <unset>                 3m53s
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl apply -f deployment.yaml 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl apply -f deployment.yaml
 deployment.apps/angie-deployment created
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-volumes$ kubectl get pods
 NAME                               READY   STATUS    RESTARTS   AGE
@@ -552,7 +552,7 @@ WARNING: There are "resources" sections in the chart not set. Using "resourcesPr
   - defaultInitContainers.prepareConfig.resources
 +info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 Listing releases matching ^kafka-dev$
-kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0
 Release "kafka-prod" does not exist. Installing it now.
 NAME: kafka-prod
 LAST DEPLOYED: Sat Jun 27 20:55:38 2026
@@ -627,7 +627,7 @@ Retagged images:
 WARNING: Rolling tag detected (bitnami/kafka:3.5.2), please note that it is strongly recommended to avoid using rolling tags in a production environment.
 +info https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html
 Listing releases matching ^kafka-prod$
-kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0
 
 ========== Updated Releases ==========
 NAME         NAMESPACE   CHART           VERSION   DURATION
@@ -645,9 +645,9 @@ helm search repo bitnami/kafka --versions
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$ helm list -n prod
 helm list -n dev
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-prod      prod            1               2026-06-27 20:55:38.542111212 +0100 BST deployed        kafka-32.4.3    4.0.0
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0      
+kafka-dev       dev             1               2026-06-27 20:55:38.499425255 +0100 BST deployed        kafka-32.4.3    4.0.0
 ```
 
 
@@ -666,10 +666,388 @@ kafka-prod-controller-headless   ClusterIP   None            <none>        9094/
 NAME                            TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                      AGE
 kafka-dev                       ClusterIP   10.97.84.40   <none>        9092/TCP                     2m19s
 kafka-dev-controller-headless   ClusterIP   None          <none>        9094/TCP,9092/TCP,9093/TCP   2m19s
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$ 
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$
 
 ```
 
 
 helmfile destroy
+```
+
+
+### 7. kubernetes-operators
+
+#### 1-ая часть
+- `minikube delete && minikube start`
+- `cd kubernetes-operators`
+- ```
+kubectl apply -f crd.yaml
+kubectl apply -f security.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment.yaml
+```
+
+
+
+
+- CRD создан:
+`kubectl get crd mysqls.otus.homework`
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get crd mysqls.otus.homework
+NAME                   CREATED AT
+mysqls.otus.homework   2026-06-28T08:08:12Z
+```
+- Под оператора жив:
+`kubectl get pods -n default -l app=mysql-operator`
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pods -n default -l app=mysql-operator
+NAME                              READY   STATUS    RESTARTS   AGE
+mysql-operator-85f8745779-5bhf6   1/1     Running   0          9m1s
+```
+
+- `Логи оператора (должны быть сообщения о создании ресурсов)`
+`kubectl logs -n default deployment/mysql-operator`
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl logs -n default deployment/mysql-operator
+/usr/local/lib/python3.10/site-packages/kopf/_core/reactor/running.py:179: FutureWarning: Absence of either namespaces or cluster-wide flag will become an error soon. For now, switching to the cluster-wide mode for backward compatibility.
+  warnings.warn("Absence of either namespaces or cluster-wide flag will become an error soon."
+[2026-06-28 08:26:32,620] kopf._core.engines.a [INFO    ] Initial authentication has been initiated.
+[2026-06-28 08:26:32,621] kopf.activities.auth [INFO    ] Activity 'login_via_client' succeeded.
+[2026-06-28 08:26:32,621] kopf._core.engines.a [INFO    ] Initial authentication has finished.
+[2026-06-28 08:26:32,849] kopf.objects         [INFO    ] [default/mysql-demo] Creating pv, pvc for mysql data and svc...
+[2026-06-28 08:26:32,862] kopf.objects         [INFO    ] [default/mysql-demo] Creating mysql deployment...
+[2026-06-28 08:26:32,873] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:26:42,882] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:26:52,890] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:02,905] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:12,920] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:22,934] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:32,949] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:42,963] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 08:27:52,977] kopf.objects         [INFO    ] [default/mysql-demo] MySQL instance mysql-demo and its children resources created!
+[2026-06-28 08:27:52,979] kopf.objects         [INFO    ] [default/mysql-demo] Handler 'mysql_on_create' succeeded.
+[2026-06-28 08:27:52,979] kopf.objects         [INFO    ] [default/mysql-demo] Creation is processed: 1 succeeded; 0 failed.
+[2026-06-28 08:27:52,984] kopf.objects         [WARNING ] [default/mysql-demo] Patching failed with inconsistencies: (('remove', ('status',), {'mysql_on_create': {'message': 'MySQL instance mysql-demo and its children resources created!'}}, None),)
+```
+
+- `Логи mysql-demo`
+`kubectl logs -n default deployment/mysql-demo`
+
+```bash
+
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl logs -n default deployment/mysql-demo
+2026-06-28 08:27:32+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 08:27:33+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2026-06-28 08:27:33+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 08:27:33+00:00 [Note] [Entrypoint]: Initializing database files
+2026-06-28T08:27:33.211086Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T08:27:33.211149Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.46) initializing of server in progress as process 81
+2026-06-28T08:27:33.215925Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T08:27:33.769905Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T08:27:34.866389Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2026-06-28 08:27:37+00:00 [Note] [Entrypoint]: Database files initialized
+2026-06-28 08:27:37+00:00 [Note] [Entrypoint]: Starting temporary server
+2026-06-28T08:27:37.682176Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T08:27:37.683497Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.46) starting as process 125
+2026-06-28T08:27:37.699165Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T08:27:37.904255Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T08:27:38.101426Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-06-28T08:27:38.101451Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-06-28T08:27:38.103900Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-06-28T08:27:38.115980Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2026-06-28T08:27:38.116017Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.46'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2026-06-28 08:27:38+00:00 [Note] [Entrypoint]: Temporary server started.
+'/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+2026-06-28 08:27:39+00:00 [Note] [Entrypoint]: Creating database otusdb
+
+2026-06-28 08:27:39+00:00 [Note] [Entrypoint]: Stopping temporary server
+2026-06-28T08:27:39.185308Z 11 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.46).
+2026-06-28T08:27:40.926965Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.46)  MySQL Community Server - GPL.
+2026-06-28 08:27:41+00:00 [Note] [Entrypoint]: Temporary server stopped
+
+2026-06-28 08:27:41+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+
+2026-06-28T08:27:41.410426Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T08:27:41.411616Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.46) starting as process 1
+2026-06-28T08:27:41.415558Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T08:27:41.629493Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T08:27:41.787155Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-06-28T08:27:41.787177Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-06-28T08:27:41.789474Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-06-28T08:27:41.801107Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2026-06-28T08:27:41.801138Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.46'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+
+```
+
+
+- Оператор создал Deployment для MySQL, Service, PVC и PV
+`kubectl get deploy -n default | grep mysql`
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get deploy -n default | grep mysq
+mysql-demo       1/1     1            1           8m57s
+mysql-operator   1/1     1            1           10m
+```
+
+
+-  Service
+`kubectl get svc -n default | grep mysql`
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get svc -n default | grep mysql
+mysql-demo   ClusterIP   None         <none>        3306/TCP   9m11s
+```
+
+
+- PVC
+`kubectl get pvc -n default | grep mysql`
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pvc -n default | grep mysql
+mysql-demo-pvc   Bound    mysql-demo-pv   1Gi        RWO            standard       <unset>                 9m27s
+```
+
+- PV
+`kubectl get pv | grep mysql`
+
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pv | grep mysql
+mysql-demo-pv   1Gi        RWO            Retain           Bound    default/mysql-demo-pvc   standard       <unset>                          9m54s
+```
+
+- Удаление
+`kubectl delete mysql mysql-demo -n default`
+
+Проверка
+
+```bash
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
+```
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pv | grep mysql
+No resources found
+```
+
+#### 2-ая часть
+
+- Деплой
+
+```bash
+minikube delete && minikube start
+cd kubernetes-operators
+kubectl apply -f crd.yaml
+kubectl apply -f security-minimal.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment.yaml
+```
+
+- Чек ошибок
+
+```bash
+kubectl logs -n default deployment/mysql-operator --tail=50
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/mysql-operator --tail=50
+/usr/local/lib/python3.10/site-packages/kopf/_core/reactor/running.py:179: FutureWarning: Absence of either namespaces or cluster-wide flag will become an error soon. For now, switching to the cluster-wide mode for backward compatibility.
+  warnings.warn("Absence of either namespaces or cluster-wide flag will become an error soon."
+[2026-06-28 09:10:40,717] kopf._core.engines.a [INFO    ] Initial authentication has been initiated.
+[2026-06-28 09:10:40,718] kopf.activities.auth [INFO    ] Activity 'login_via_client' succeeded.
+[2026-06-28 09:10:40,718] kopf._core.engines.a [INFO    ] Initial authentication has finished.
+[2026-06-28 09:10:40,946] kopf.objects         [INFO    ] [default/mysql-demo] Creating pv, pvc for mysql data and svc...
+[2026-06-28 09:10:40,963] kopf.objects         [INFO    ] [default/mysql-demo] Creating mysql deployment...
+[2026-06-28 09:10:40,977] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:10:50,992] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:01,004] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:11,019] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:21,033] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+[2026-06-28 09:11:31,048] kopf.objects         [INFO    ] [default/mysql-demo] Waiting for mysql deployment to become ready...
+```
+
+```bash
+kubectl logs -n default deployment/mysql-demo --tail=50
+```
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/mysql-demo --tail=50
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 09:11:46+00:00 [Note] [Entrypoint]: Initializing database files
+2026-06-28T09:11:46.957615Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T09:11:46.957682Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.46) initializing of server in progress as process 81
+2026-06-28T09:11:46.962279Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T09:11:47.515407Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+```
+
+
+- Чек созданных ресурсов
+
+
+```bash
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
+```
+
+- Чек удаления
+```bash
+kubectl delete mysql mysql-demo -n default
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
+```
+
+#### 3-ая часть
+
+##### develop
+
+- окружение
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+- реки
+
+```
+pip install -r requirements.txt
+
+```
+- cd `kubernetes-operators`
+
+- develop (проверки)
+
+```
+minikube delete && minikube start
+# чтобы миникуб видел образ локальный
+eval $(minikube docker-env)
+docker build -t bral-operator:latest ./bral-operator/
+kubectl apply -f crd.yaml
+kubectl apply -f security.yaml
+kubectl apply -f object-crd.yaml
+```
+
+Запуск локально:
+```
+kopf run bral-operator/bral-operator.py
+```
+#### deploy
+
+- deploy внутри миникуба
+
+```bash
+minikube delete && minikube start
+# чтобы миникуб видел образ локальный
+eval $(minikube docker-env)
+docker build -t bral-operator:latest ./bral-operator/
+kubectl apply -f crd.yaml
+kubectl apply -f security.yaml
+kubectl apply -f object-crd.yaml
+kubectl apply -f deployment-bral.yaml
+
+```
+
+
+
+- Чек ошибок
+
+```bash
+kubectl logs -n default deployment/bral-operator --tail=50
+```
+
+```
+(.venv) ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/bral-operator --tail=50
+/usr/local/lib/python3.12/site-packages/kopf/_core/reactor/running.py:179: FutureWarning: Absence of either namespaces or cluster-wide flag will become an error soon. For now, switching to the cluster-wide mode for backward compatibility.
+  warnings.warn("Absence of either namespaces or cluster-wide flag will become an error soon."
+[2026-06-28 13:31:47,753] kopf._core.engines.a [INFO    ] Initial authentication has been initiated.
+[2026-06-28 13:31:47,754] kopf.activities.auth [INFO    ] Activity 'login_via_client' succeeded.
+[2026-06-28 13:31:47,754] kopf._core.engines.a [INFO    ] Initial authentication has finished.
+2026-06-28T13:31:47.772641Z [info     ] processing_create              name=mysql-demo namespace=default
+2026-06-28T13:31:47.779020Z [info     ] pv_created                     name=mysql-demo
+2026-06-28T13:31:47.781915Z [info     ] pvc_created                    name=mysql-demo namespace=default
+2026-06-28T13:31:47.788379Z [info     ] service_created                name=mysql-demo namespace=default
+2026-06-28T13:31:47.796784Z [info     ] deployment_created             name=mysql-demo namespace=default
+2026-06-28T13:31:47.796840Z [info     ] all_resources_created          name=mysql-demo namespace=default
+[2026-06-28 13:31:47,797] kopf.objects         [INFO    ] [default/mysql-demo] Handler 'create_mysql' succeeded.
+[2026-06-28 13:31:47,797] kopf.objects         [INFO    ] [default/mysql-demo] Creation is processed: 1 succeeded; 0 failed.
+```
+
+```bash
+kubectl logs -n default deployment/mysql-demo --tail=50
+```
+
+```
+(.venv) ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-operators$ kubectl logs -n default deployment/mysql-demo --tail=50
+2026-06-28 13:32:30+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 13:32:30+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2026-06-28 13:32:30+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
+2026-06-28 13:32:30+00:00 [Note] [Entrypoint]: Initializing database files
+2026-06-28T13:32:30.761367Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T13:32:30.761443Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.46) initializing of server in progress as process 81
+2026-06-28T13:32:30.766565Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T13:32:31.302376Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T13:32:32.525459Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2026-06-28 13:32:35+00:00 [Note] [Entrypoint]: Database files initialized
+2026-06-28 13:32:35+00:00 [Note] [Entrypoint]: Starting temporary server
+2026-06-28T13:32:35.295669Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T13:32:35.296995Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.46) starting as process 125
+2026-06-28T13:32:35.312756Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T13:32:35.526744Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T13:32:35.713659Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-06-28T13:32:35.713679Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-06-28T13:32:35.716887Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-06-28T13:32:35.729941Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+2026-06-28T13:32:35.729983Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.46'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2026-06-28 13:32:35+00:00 [Note] [Entrypoint]: Temporary server started.
+'/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+2026-06-28 13:32:36+00:00 [Note] [Entrypoint]: Creating database otusdb
+
+2026-06-28 13:32:36+00:00 [Note] [Entrypoint]: Stopping temporary server
+2026-06-28T13:32:36.804570Z 11 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.46).
+2026-06-28T13:32:38.558362Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.46)  MySQL Community Server - GPL.
+2026-06-28 13:32:38+00:00 [Note] [Entrypoint]: Temporary server stopped
+
+2026-06-28 13:32:38+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+
+2026-06-28T13:32:39.024589Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2026-06-28T13:32:39.025910Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.46) starting as process 1
+2026-06-28T13:32:39.030129Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-28T13:32:39.208843Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-28T13:32:39.364367Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-06-28T13:32:39.364389Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-06-28T13:32:39.366641Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2026-06-28T13:32:39.375894Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2026-06-28T13:32:39.375952Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.46'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+```
+
+
+- Чек созданных ресурсов
+
+
+```bash
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
+```
+
+- Чек удаления
+```bash
+kubectl delete mysql mysql-demo -n default
+kubectl get deploy,svc,pvc -n default | grep mysql
+kubectl get pv | grep mysql
 ```

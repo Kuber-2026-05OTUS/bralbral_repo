@@ -11,7 +11,7 @@ spec:
     ports:
     - containerPort: 8000
     volumeMounts:
-    
+
     - name: shared-index-html
       mountPath: /homework
 

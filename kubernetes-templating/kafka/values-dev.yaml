@@ -21,4 +21,4 @@ auth:
   enabled: false
 
 controller:
-  replicaCount: 1 
+  replicaCount: 1
