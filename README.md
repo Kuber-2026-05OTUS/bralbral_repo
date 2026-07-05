@@ -1051,3 +1051,106 @@ kubectl delete mysql mysql-demo -n default
 kubectl get deploy,svc,pvc -n default | grep mysql
 kubectl get pv | grep mysql
 ```
+
+### 8. kubernetes-monitoring
+
+- `minikube delete && minikube start`
+- `cd kubernetes-monitoring`
+
+Линк на прометеус оператор: `https://github.com/prometheus-operator/prometheus-operator`
+
+Хелм-чарт для установки: `https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack`
+
+- Установка через OCI-репо:
+
+```
+helm install prometheus oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+```
+
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-monitoring$ helm install prometheus oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+Pulled: ghcr.io/prometheus-community/charts/kube-prometheus-stack:87.3.0
+Digest: sha256:74802f2e7739296d8994fca1f21eadfa8990a1260e9ba20697384e8c6a813e98
+NAME: prometheus
+LAST DEPLOYED: Sun Jun 28 15:21:06 2026
+NAMESPACE: monitoring
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+kube-prometheus-stack has been installed. Check its status by running:
+  kubectl --namespace monitoring get pods -l "release=prometheus"
+
+Get Grafana 'admin' user password by running:
+
+  kubectl --namespace monitoring get secrets prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+
+Access Grafana local instance:
+
+  export POD_NAME=$(kubectl --namespace monitoring get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=prometheus" -oname)
+  kubectl --namespace monitoring port-forward $POD_NAME 3000
+
+Get your grafana admin user password by running:
+
+  kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+
+
+Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+```
+
+
+
+```
+kubectl apply -f namespace.yaml
+kubectl apply -f configmap.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+kubectl apply -f serviceMonitor.yaml
+
+```
+kubectl auth can-i list servicemonitors --as=system:serviceaccount:monitoring:prometheus-kube-prometheus-operator -n homework
+```
+
+
+```
+kubectl port-forward -n monitoring svc/prometheus-operated 9091:9090
+```
+
+```
+query -> nginx_up
+```
+
+
+```
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pods -A
+NAMESPACE     NAME                                                     READY   STATUS    RESTARTS      AGE
+homework      nginx-server-6df475bf9c-f6rgj                            2/2     Running   0             31m
+homework      nginx-server-6df475bf9c-s9zpv                            2/2     Running   0             31m
+kube-system   coredns-7d764666f9-dcggd                                 1/1     Running   0             82m
+kube-system   etcd-minikube                                            1/1     Running   0             82m
+kube-system   kube-apiserver-minikube                                  1/1     Running   0             82m
+kube-system   kube-controller-manager-minikube                         1/1     Running   1 (82m ago)   82m
+kube-system   kube-proxy-hg7tn                                         1/1     Running   0             82m
+kube-system   kube-scheduler-minikube                                  1/1     Running   0             82m
+kube-system   storage-provisioner                                      1/1     Running   1 (81m ago)   82m
+monitoring    alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0             72m
+monitoring    prometheus-grafana-7bdc56d6b6-kmkx6                      3/3     Running   0             18m
+monitoring    prometheus-kube-prometheus-operator-65dd99d994-lgmdr     1/1     Running   0             73m
+monitoring    prometheus-kube-state-metrics-79ff744748-bjlpl           1/1     Running   0             18m
+monitoring    prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0             72m
+```
+
+Интересует `prometheus-kube-prometheus-operator-65dd99d994-lgmdr`
+
+```
+kubectl delete pod -n monitoring prometheus-kube-prometheus-operator-65dd99d994-lgmdr
+```
+
+После этого конфиг должен обновится.
+
