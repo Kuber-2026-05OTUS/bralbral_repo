@@ -1438,4 +1438,15 @@ kubectl apply -f kubernetes-gitops/argocd/project-otus.yaml
 kubectl apply -f kubernetes-gitops/argocd/application-networks.yaml
 kubectl apply -f kubernetes-gitops/argocd/application-templating.yaml
 ```
+
+Для `application-networks` нужно дополнительно установить гейтвей:
+
+```bash
+kubectl apply -f \
+  https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+```
+
+
 ![argo-pods.png](kubernetes-gitops/argo-pods.png)
+
+![running-apps.png](kubernetes-gitops/running-apps.png)
