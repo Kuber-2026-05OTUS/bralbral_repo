@@ -102,10 +102,10 @@ No resources found
 ```
 
 
--   ```bash
-    helm repo add traefik https://traefik.github.io/charts && helm repo update && \
-    helm install traefik traefik/traefik --namespace traefik --create-namespace -f ./additional/helm/traefic-values.yaml
-    ```
+```bash
+helm repo add traefik https://traefik.github.io/charts && helm repo update && \
+  helm install traefik traefik/traefik --namespace traefik --create-namespace -f ./additional/helm/traefic-values.yaml
+```
 
 
 ```bash
@@ -355,7 +355,7 @@ rm templates/tests/*
 - `helm upgrade homework . --set replicaCount=5`
 - `helm history homework`
 
-- ```
+```bash
 helm upgrade homework . \
   --set image.repository=docker.angie.software/angie \
   --set image.tag=1.12.0
@@ -391,7 +391,8 @@ homework-redis-master-0                 1/1     Running   0          11m
 - `cd kubernetes-templating`
 
 - Установка helmfile (https://helmfile.readthedocs.io/en/latest/#installation)
-- ```
+
+```bash
 # Скачиваем архив для Linux amd64
 wget https://github.com/helmfile/helmfile/releases/download/v1.6.0/helmfile_1.6.0_linux_amd64.tar.gz
 
@@ -480,9 +481,7 @@ NAME    VERSION TYPE    APIVERSION      PROVENANCE      SOURCE
 helmfile sync
 ```
 
-```
-
-```
+```bash
 helm plugin install https://github.com/databus23/helm-diff --version v3.15.10
 ```
 
@@ -669,8 +668,7 @@ kafka-dev-controller-headless   ClusterIP   None          <none>        9094/TCP
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$
 
 ```
-
-
+```bash
 helmfile destroy
 ```
 
@@ -680,7 +678,7 @@ helmfile destroy
 #### 1-ая часть
 - `minikube delete && minikube start`
 - `cd kubernetes-operators`
-- ```
+```bash
 kubectl apply -f crd.yaml
 kubectl apply -f security.yaml
 kubectl apply -f object-crd.yaml
@@ -1157,17 +1155,18 @@ kubectl delete pod -n monitoring prometheus-kube-prometheus-operator-65dd99d994-
 
 ### 9. kubernetes-logging
 
-Установка кластера [run-cluster.yaml](run-cluster.md)
+Установка кластера: [run-cluster.md](kubernetes-logging/run-cluster.md)
 
-# поменить ноду тейнтом
+#### Настройка infra-ноды
 
+```bash
 kubectl label node worker2 node-role=infra
 kubectl taint node worker2 node-role=infra:NoSchedule
-
-
-# Minio deploy standalone
-
 ```
+
+#### Развёртывание MinIO
+
+```bash
 cd kubernetes-logging
 kubectl create namespace minio
 kubectl apply -f ./minio/pvc.yaml
@@ -1182,12 +1181,14 @@ kubectl -n minio port-forward svc/minio 9001:9001
 
 
 
-# Loki install standalony by helm
+#### Установка Loki через Helm
 
+```bash
 cd kubernetes-logging
 helm repo add grafana-community https://grafana-community.github.io/helm-charts
 helm repo update
 helm install loki grafana-community/loki -f ./charts/grafana-loki/values.yaml -n loki --create-namespace
+```
 
 
 ```
@@ -1257,16 +1258,15 @@ Connecting Grafana to Loki
 
 If Grafana operates within the cluster, you'll set up a new Loki datasource by utilizing the following URL:
 
-http://loki-gateway.loki.svc.cluster.local/
-```
+`http://loki-gateway.loki.svc.cluster.local/`
 
+#### Установка Promtail
 
-# promtail
-
-```
+```bash
 helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
 ```
 
+```text
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-logging$ helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
 level=WARN msg="this chart is deprecated"
 NAME: promtail
@@ -1286,11 +1286,11 @@ NOTES:
 Verify the application is working by running these commands:
 * kubectl --namespace promtail port-forward daemonset/promtail 3101
 * curl http://127.0.0.1:3101/metrics
-
-
-# grafana
-
 ```
+
+#### Установка Grafana
+
+```bash
 kubectl apply -f ./charts/grafana/ns.yaml
 kubectl apply -f ./charts/grafana/pvc.yaml
 helm install grafana grafana/grafana -n grafana  -f ./charts/grafana/values.yaml
@@ -1325,7 +1325,7 @@ NOTES:
 ```
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm list -A
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1     
-loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3      
-promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1    
+grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1
+loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3
+promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1
 ```

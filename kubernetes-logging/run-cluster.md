@@ -1,6 +1,9 @@
 
-# All nodes
-```
+# Kubernetes cluster setup
+
+## All nodes
+
+```bash
 swapoff -a
 sed -i '/ swap / s/^/#/' /etc/fstab
 
@@ -48,10 +51,9 @@ timeout: 10
 EOF
 ```
 
+## Master
 
-
-# Master
-```
+```bash
 kubeadm init --pod-network-cidr=10.244.0.0/16
 
 mkdir -p $HOME/.kube
@@ -60,43 +62,50 @@ cp /etc/kubernetes/admin.conf $HOME/.kube/config
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 ```
 
+Create a join command for worker nodes:
+
+```bash
 kubeadm token create --print-join-command
-
-```
-root@master:~# kubeadm token create --print-join-command
-kubeadm join 192.168.122.201:6443 --token ealsoo.cemkxjseshcmqfri --discovery-token-ca-cert-hash sha256:68c1a11a02e70bd179a9773609ba894ef01017ff84880cb7dbe8d836fee460e1 
 ```
 
+Example output:
 
-# Worker
-
-Join 
-
-```
-kubeadm join 192.168.122.201:6443 --token ealsoo.cemkxjseshcmqfri --discovery-token-ca-cert-hash sha256:68c1a11a02e70bd179a9773609ba894ef01017ff84880cb7dbe8d836fee460e1 
+```bash
+kubeadm join 192.168.122.201:6443 --token ealsoo.cemkxjseshcmqfri --discovery-token-ca-cert-hash sha256:68c1a11a02e70bd179a9773609ba894ef01017ff84880cb7dbe8d836fee460e1
 ```
 
-# Check
+## Worker
+
+Run the generated `kubeadm join` command on each worker:
+
+```bash
+kubeadm join 192.168.122.201:6443 --token ealsoo.cemkxjseshcmqfri --discovery-token-ca-cert-hash sha256:68c1a11a02e70bd179a9773609ba894ef01017ff84880cb7dbe8d836fee460e1
 ```
+
+## Check cluster status
+
+```bash
 kubectl get nodes -o wide
 kubectl get pods -A
 ```
 
-# StorageClass (CSI=container storage interface)
-`kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml`
+## StorageClass
 
-## Check
+CSI means Container Storage Interface.
 
-`kubectl get storageclass`
-
-### Set default
+```bash
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 ```
-ubuntu@ubuntu-MS-7C52:~$ kubectl get sc
-NAME         PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-local-path   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  4m8s
-ubuntu@ubuntu-MS-7C52:~$ kubectl patch storageclass <имя_storage_class> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-bash: имя_storage_class: No such file or directory
-ubuntu@ubuntu-MS-7C52:~$ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-storageclass.storage.k8s.io/local-path patched
-ubuntu@ubuntu-MS-7C52:~$ 
+
+### Check
+
+```bash
+kubectl get storageclass
+```
+
+### Set as default
+
+```bash
+kubectl patch storageclass local-path \
+  -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
