@@ -1329,3 +1329,113 @@ grafana         grafana         1               2026-07-04 17:11:26.607966677 +0
 loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3
 promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1
 ```
+
+### 10. kubernetes-gitops
+
+Подготовка VM: [create_vm.md](kubernetes-gitops/create_vm.md)
+Установка кластера: [create-k8s.md](kubernetes-gitops/create-k8s.md)
+
+#### Настройка infra-ноды
+
+```bash
+kubectl label node worker2 node-role=infra
+kubectl taint node worker2 node-role=infra:NoSchedule
+```
+
+Taint запрещает планирование на `worker2` Pod без подходящего toleration.
+
+#### Установка Argo CD
+
+Конфигурация [values.yaml](kubernetes-gitops/argocd/values.yaml) задаёт для
+всех компонентов Argo CD `nodeSelector: node-role=infra` и toleration к taint
+infra-ноды.
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argocd argo/argo-cd \
+  --namespace argocd \
+  --create-namespace \
+  --values kubernetes-gitops/argocd/values.yaml
+```
+
+Вывод:
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argocd argo/argo-cd \
+  --namespace argocd \
+  --create-namespace \
+  --values kubernetes-gitops/argocd/values.yaml
+"argo" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Unable to get an update from the "bitnami" chart repository (https://charts.bitnami.com/bitnami):
+	failed to fetch https://charts.bitnami.com/bitnami/index.yaml : 403 Forbidden
+...Successfully got an update from the "longhorn" chart repository
+...Successfully got an update from the "traefik" chart repository
+...Successfully got an update from the "argo" chart repository
+...Successfully got an update from the "grafana-community" chart repository
+...Successfully got an update from the "grafana" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+Error: failed to update the following repositories: [https://charts.bitnami.com/bitnami]
+Release "argocd" does not exist. Installing it now.
+NAME: argocd
+LAST DEPLOYED: Sat Jul 18 16:57:39 2026
+NAMESPACE: argocd
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+In order to access the server UI you have the following options:
+
+1. kubectl port-forward service/argocd-server -n argocd 8080:443
+
+    and then open the browser on http://localhost:8080 and accept the certificate
+
+2. enable ingress in the values file `server.ingress.enabled` and either
+      - Add the annotation for ssl passthrough: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough
+      - Set the `configs.params."server.insecure"` in the values file and terminate SSL at your ingress: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-2-multiple-ingress-objects-and-hosts
+
+
+After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+(You should delete the initial secret afterwards as suggested by the Getting Started Guide: https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli)
+
+
+```
+
+Проверка: все Pod Argo CD должны быть запланированы на `worker2`.
+
+```bash
+kubectl get pods -n argocd -o wide
+kubectl get nodes -L node-role
+```
+
+#### Project и приложения Argo CD
+
+Манифесты GitOps-объектов находятся в `kubernetes-gitops/argocd`:
+
+- [project-otus.yaml](kubernetes-gitops/argocd/project-otus.yaml) — project
+  `otus`, разрешающий репозиторий этого курса и назначения в `homework` и
+  `homework-helm`;
+- [application-networks.yaml](kubernetes-gitops/argocd/application-networks.yaml)
+  — приложение с ручной синхронизацией для `kubernetes-networks`;
+- [application-templating.yaml](kubernetes-gitops/argocd/application-templating.yaml)
+  — Helm-приложение с автоматической синхронизацией, `selfHeal` и `prune`.
+
+`HomeworkHelm` записан как `homework-helm`: имена namespace в Kubernetes могут
+содержать только строчные буквы. Для приложения из `kubernetes-networks`
+Deployment закреплён за `worker1` через `nodeSelector`; эта нода не имеет taint
+infra-ноды.
+
+```bash
+kubectl apply -f kubernetes-gitops/argocd/project-otus.yaml
+kubectl apply -f kubernetes-gitops/argocd/application-networks.yaml
+kubectl apply -f kubernetes-gitops/argocd/application-templating.yaml
+```
+![argo-pods.png](kubernetes-gitops/argo-pods.png)

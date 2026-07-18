@@ -197,7 +197,35 @@ sudo kubeadm join 192.168.122.101:6443 \
 kubeadm token create --print-join-command
 ```
 
-## 8. Проверка кластера
+## 8. Установка CSI и StorageClass
+
+Выполнить на `master` после подключения worker-узлов. Local Path Provisioner
+создаёт локальные PV динамически и необходим приложениям с PVC, например Redis
+из Helm-чарта.
+
+```bash
+kubectl apply -f \
+  https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.36/deploy/local-path-storage.yaml
+
+kubectl -n local-path-storage rollout status \
+  deployment/local-path-provisioner
+
+kubectl patch storageclass local-path \
+  -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+Проверить provisioner и StorageClass:
+
+```bash
+kubectl get pods -n local-path-storage
+kubectl get storageclass
+```
+
+У `local-path` должна быть отметка `(default)`. Существующие PVC без
+`storageClassName` после появления default StorageClass будут использовать этот
+класс; проверить можно командой `kubectl get pvc -A`.
+
+## 9. Проверка кластера
 
 Выполнить на `master`:
 
