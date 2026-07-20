@@ -102,10 +102,10 @@ No resources found
 ```
 
 
--   ```bash
-    helm repo add traefik https://traefik.github.io/charts && helm repo update && \
-    helm install traefik traefik/traefik --namespace traefik --create-namespace -f ./additional/helm/traefic-values.yaml
-    ```
+```bash
+helm repo add traefik https://traefik.github.io/charts && helm repo update && \
+  helm install traefik traefik/traefik --namespace traefik --create-namespace -f ./additional/helm/traefic-values.yaml
+```
 
 
 ```bash
@@ -355,7 +355,7 @@ rm templates/tests/*
 - `helm upgrade homework . --set replicaCount=5`
 - `helm history homework`
 
-- ```
+```bash
 helm upgrade homework . \
   --set image.repository=docker.angie.software/angie \
   --set image.tag=1.12.0
@@ -391,7 +391,8 @@ homework-redis-master-0                 1/1     Running   0          11m
 - `cd kubernetes-templating`
 
 - Установка helmfile (https://helmfile.readthedocs.io/en/latest/#installation)
-- ```
+
+```bash
 # Скачиваем архив для Linux amd64
 wget https://github.com/helmfile/helmfile/releases/download/v1.6.0/helmfile_1.6.0_linux_amd64.tar.gz
 
@@ -480,9 +481,7 @@ NAME    VERSION TYPE    APIVERSION      PROVENANCE      SOURCE
 helmfile sync
 ```
 
-```
-
-```
+```bash
 helm plugin install https://github.com/databus23/helm-diff --version v3.15.10
 ```
 
@@ -669,8 +668,7 @@ kafka-dev-controller-headless   ClusterIP   None          <none>        9094/TCP
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-templating/kafka$
 
 ```
-
-
+```bash
 helmfile destroy
 ```
 
@@ -680,7 +678,7 @@ helmfile destroy
 #### 1-ая часть
 - `minikube delete && minikube start`
 - `cd kubernetes-operators`
-- ```
+```bash
 kubectl apply -f crd.yaml
 kubectl apply -f security.yaml
 kubectl apply -f object-crd.yaml
@@ -1157,17 +1155,18 @@ kubectl delete pod -n monitoring prometheus-kube-prometheus-operator-65dd99d994-
 
 ### 9. kubernetes-logging
 
-Установка кластера [run-cluster.yaml](run-cluster.md)
+Установка кластера: [run-cluster.md](kubernetes-logging/run-cluster.md)
 
-# поменить ноду тейнтом
+#### Настройка infra-ноды
 
+```bash
 kubectl label node worker2 node-role=infra
 kubectl taint node worker2 node-role=infra:NoSchedule
-
-
-# Minio deploy standalone
-
 ```
+
+#### Развёртывание MinIO
+
+```bash
 cd kubernetes-logging
 kubectl create namespace minio
 kubectl apply -f ./minio/pvc.yaml
@@ -1182,12 +1181,14 @@ kubectl -n minio port-forward svc/minio 9001:9001
 
 
 
-# Loki install standalony by helm
+#### Установка Loki через Helm
 
+```bash
 cd kubernetes-logging
 helm repo add grafana-community https://grafana-community.github.io/helm-charts
 helm repo update
 helm install loki grafana-community/loki -f ./charts/grafana-loki/values.yaml -n loki --create-namespace
+```
 
 
 ```
@@ -1257,16 +1258,15 @@ Connecting Grafana to Loki
 
 If Grafana operates within the cluster, you'll set up a new Loki datasource by utilizing the following URL:
 
-http://loki-gateway.loki.svc.cluster.local/
-```
+`http://loki-gateway.loki.svc.cluster.local/`
 
+#### Установка Promtail
 
-# promtail
-
-```
+```bash
 helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
 ```
 
+```text
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-logging$ helm install promtail grafana/promtail   -n promtail   --create-namespace   -f ./charts/grafana-promtail/values.yaml
 level=WARN msg="this chart is deprecated"
 NAME: promtail
@@ -1286,11 +1286,11 @@ NOTES:
 Verify the application is working by running these commands:
 * kubectl --namespace promtail port-forward daemonset/promtail 3101
 * curl http://127.0.0.1:3101/metrics
-
-
-# grafana
-
 ```
+
+#### Установка Grafana
+
+```bash
 kubectl apply -f ./charts/grafana/ns.yaml
 kubectl apply -f ./charts/grafana/pvc.yaml
 helm install grafana grafana/grafana -n grafana  -f ./charts/grafana/values.yaml
@@ -1325,7 +1325,128 @@ NOTES:
 ```
 ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm list -A
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1     
-loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3      
-promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1    
+grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1
+loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3
+promtail        promtail        1               2026-07-04 17:00:52.199047151 +0100 BST deployed        promtail-6.17.1 3.5.1
 ```
+
+### 10. kubernetes-gitops
+
+Подготовка VM: [create_vm.md](kubernetes-gitops/create_vm.md)
+Установка кластера: [create-k8s.md](kubernetes-gitops/create-k8s.md)
+
+#### Настройка infra-ноды
+
+```bash
+kubectl label node worker2 node-role=infra
+kubectl taint node worker2 node-role=infra:NoSchedule
+```
+
+Taint запрещает планирование на `worker2` Pod без подходящего toleration.
+
+#### Установка Argo CD
+
+Конфигурация [values.yaml](kubernetes-gitops/argocd/values.yaml) задаёт для
+всех компонентов Argo CD `nodeSelector: node-role=infra` и toleration к taint
+infra-ноды.
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argocd argo/argo-cd \
+  --namespace argocd \
+  --create-namespace \
+  --values kubernetes-gitops/argocd/values.yaml
+```
+
+Вывод:
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+helm upgrade --install argocd argo/argo-cd \
+  --namespace argocd \
+  --create-namespace \
+  --values kubernetes-gitops/argocd/values.yaml
+"argo" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Unable to get an update from the "bitnami" chart repository (https://charts.bitnami.com/bitnami):
+	failed to fetch https://charts.bitnami.com/bitnami/index.yaml : 403 Forbidden
+...Successfully got an update from the "longhorn" chart repository
+...Successfully got an update from the "traefik" chart repository
+...Successfully got an update from the "argo" chart repository
+...Successfully got an update from the "grafana-community" chart repository
+...Successfully got an update from the "grafana" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+Error: failed to update the following repositories: [https://charts.bitnami.com/bitnami]
+Release "argocd" does not exist. Installing it now.
+NAME: argocd
+LAST DEPLOYED: Sat Jul 18 16:57:39 2026
+NAMESPACE: argocd
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+In order to access the server UI you have the following options:
+
+1. kubectl port-forward service/argocd-server -n argocd 8080:443
+
+    and then open the browser on http://localhost:8080 and accept the certificate
+
+2. enable ingress in the values file `server.ingress.enabled` and either
+      - Add the annotation for ssl passthrough: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough
+      - Set the `configs.params."server.insecure"` in the values file and terminate SSL at your ingress: https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-2-multiple-ingress-objects-and-hosts
+
+
+After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+(You should delete the initial secret afterwards as suggested by the Getting Started Guide: https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli)
+
+
+```
+
+Проверка: все Pod Argo CD должны быть запланированы на `worker2`.
+
+```bash
+kubectl get pods -n argocd -o wide
+kubectl get nodes -L node-role
+```
+
+#### Project и приложения Argo CD
+
+Манифесты GitOps-объектов находятся в `kubernetes-gitops/argocd`:
+
+- [project-otus.yaml](kubernetes-gitops/argocd/project-otus.yaml) — project
+  `otus`, разрешающий репозиторий этого курса и назначения в `homework` и
+  `homework-helm`;
+- [application-networks.yaml](kubernetes-gitops/argocd/application-networks.yaml)
+  — приложение с ручной синхронизацией для `kubernetes-networks`;
+- [application-templating.yaml](kubernetes-gitops/argocd/application-templating.yaml)
+  — Helm-приложение с автоматической синхронизацией, `selfHeal` и `prune`.
+
+`HomeworkHelm` записан как `homework-helm`: имена namespace в Kubernetes могут
+содержать только строчные буквы. Для приложения из `kubernetes-networks`
+Deployment закреплён за `worker1` через `nodeSelector`; эта нода не имеет taint
+infra-ноды.
+
+```bash
+kubectl apply -f kubernetes-gitops/argocd/project-otus.yaml
+kubectl apply -f kubernetes-gitops/argocd/application-networks.yaml
+kubectl apply -f kubernetes-gitops/argocd/application-templating.yaml
+```
+
+Для `application-networks` нужно дополнительно установить гейтвей:
+
+```bash
+kubectl apply -f \
+  https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+```
+
+
+![argo-pods.png](kubernetes-gitops/argo-pods.png)
+
+![running-apps.png](kubernetes-gitops/running-apps.png)

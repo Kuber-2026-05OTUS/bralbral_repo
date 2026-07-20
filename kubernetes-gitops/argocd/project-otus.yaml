@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: otus
+  namespace: argocd
+spec:
+  description: OTUS Kubernetes course homework
+  sourceRepos:
+    - https://github.com/Kuber-2026-05OTUS/bralbral_repo.git
+  destinations:
+    - namespace: homework
+      server: https://kubernetes.default.svc
+    - namespace: homework-helm
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

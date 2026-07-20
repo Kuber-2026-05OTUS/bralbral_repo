@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homework-networks
+  namespace: argocd
+spec:
+  project: otus
+  source:
+    repoURL: https://github.com/Kuber-2026-05OTUS/bralbral_repo.git
+    targetRevision: HEAD
+    path: kubernetes-networks
+    directory:
+      recurse: true
+      include: '{*.yaml,additional/manifests/*.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: homework
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

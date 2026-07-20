@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homework-templating
+  namespace: argocd
+spec:
+  project: otus
+  source:
+    repoURL: https://github.com/Kuber-2026-05OTUS/bralbral_repo.git
+    targetRevision: HEAD
+    path: kubernetes-templating/homework-app
+    helm:
+      parameters:
+        - name: namespace
+          value: homework-helm
+        - name: replicaCount
+          value: '2'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: homework-helm
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

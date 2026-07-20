@@ -23,6 +23,8 @@ spec:
       labels:
         app: angie
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: worker1
       containers:
       - name: nginx-fork
         image: docker.angie.software/angie:1.11.6-minimal

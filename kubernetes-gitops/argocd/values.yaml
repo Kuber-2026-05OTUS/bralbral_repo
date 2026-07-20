@@ -1,0 +1,10 @@
+# Scheduling policy for every Argo CD workload created by the argo-cd chart.
+global:
+  nodeSelector:
+    node-role: infra
+
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
