@@ -15,12 +15,14 @@ declare -A IPS=(
   [master]="192.168.122.101"
   [worker1]="192.168.122.102"
   [worker2]="192.168.122.103"
+  [worker3]="192.168.122.104"
 )
 
 VMS=(
   master
   worker1
   worker2
+  worker3
 )
 
 network_is_active() {

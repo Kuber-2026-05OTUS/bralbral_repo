@@ -52,6 +52,6 @@ chmod +x set-static-ips.sh
 | `master` | `192.168.122.101` | `ubuntu` | Public key: `~/.ssh/id_ed25519` |
 | `worker1` | `192.168.122.102` | `ubuntu` | Public key: `~/.ssh/id_ed25519` |
 | `worker2` | `192.168.122.103` | `ubuntu` | Public key: `~/.ssh/id_ed25519` |
-
+| `worker3` | `192.168.122.104` | `ubuntu` | Public key: `~/.ssh/id_ed25519` |
 Порт — `22`. До назначения статических адресов используйте адрес, показанный
 командой `uvt-kvm ip <имя-vm>`.
