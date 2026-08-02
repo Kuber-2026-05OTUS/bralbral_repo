@@ -1624,4 +1624,221 @@ Storage Type       consul
 HA Enabled         true
 ```
 
+##### Хранилище секретов + service account + policy
 
+Создать хранилище секретов:
+
+```bash
+kubectl exec -n vault vault-0 -c vault -- \
+  vault login  <ROOT_TOKEN>
+
+kubectl exec -n vault vault-0 -c vault -- \
+  vault secrets enable -path=otus kv
+
+kubectl exec -n vault vault-0 -c vault -- \
+  vault kv put otus/cred username=otus password='asajkjkahs'
+```
+
+Вывод:
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl exec -n vault vault-0 -c vault -- \
+  vault login  <ROOT_TOKEN>
+
+kubectl exec -n vault vault-0 -c vault -- \
+  vault secrets enable -path=otus kv
+
+kubectl exec -n vault vault-0 -c vault -- \
+  vault kv put otus/cred username=otus password='asajkjkahs'
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You do NOT need to run "vault login"
+again. Future Vault requests will automatically use this token.
+
+Key                  Value
+---                  -----
+token                <ROOT_TOKEN>
+token_accessor       lZ3uGJycdRNdsOTYoa2XnBbc
+token_duration       ∞
+token_renewable      false
+token_policies       ["root"]
+identity_policies    []
+policies             ["root"]
+Success! Enabled the kv secrets engine at: otus/
+Success! Data written to: otus/cred
+```
+
+Создание роли и CRB :
+
+```bash
+kubectl apply -f kubernetes-vault/vault-auth.yaml
+```
+
+Вывод:
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl apply -f kubernetes-vault/vault-auth.yaml
+serviceaccount/vault-auth created
+clusterrolebinding.rbac.authorization.k8s.io/vault-auth created
+```
+
+
+Включить авторизацию auth/kubernetes:
+
+```bash
+export ROOT_TOKEN='<ROOT_TOKEN>'
+export KUBE_TOKEN="$(kubectl create token vault-auth -n vault)"
+export KUBE_CA_CERT="$(kubectl get configmap kube-root-ca.crt -n vault -o jsonpath='{.data.ca\.crt}')"
+
+kubectl exec -n vault vault-0 -c vault -- \
+  env VAULT_TOKEN="$ROOT_TOKEN" vault auth enable kubernetes
+```
+
+Вывод:
+
+```bash
+Success! Enabled kubernetes auth method at: kubernetes/
+```
+
+Настроить vault для работы с kubernetes auth:
+
+```bash
+kubectl exec -n vault vault-0 -c vault -- \
+  env VAULT_TOKEN="$ROOT_TOKEN" \
+  vault write auth/kubernetes/config \
+  token_reviewer_jwt="$KUBE_TOKEN" \
+  kubernetes_host="https://kubernetes.default.svc:443" \
+  kubernetes_ca_cert="$KUBE_CA_CERT"
+```
+
+Вывод:
+
+```bash
+Success! Data written to: auth/kubernetes/config
+```
+
+Применение политики:
+
+```bash
+kubectl exec -i -n vault vault-0 -c vault -- \
+  env VAULT_TOKEN="$ROOT_TOKEN" \
+  vault policy write otus-policy - < kubernetes-vault/otus-policy.hcl
+```
+
+Вывод:
+
+```bash
+
+Success! Uploaded policy: otus-policy
+```
+
+##### Создание роли + установка оператора
+
+```bash
+kubectl exec -n vault vault-0 -c vault -- \
+  env VAULT_TOKEN="$ROOT_TOKEN" \
+  vault write auth/kubernetes/role/otus \
+  bound_service_account_names=vault-auth \
+  bound_service_account_namespaces=vault \
+  policies=otus-policy
+```
+
+Вывод:
+
+```bash
+WARNING! The following warnings were returned from Vault:
+
+  * Role otus does not have an audience configured. While audiences are
+  not required, consider specifying one if your use case would benefit from
+  additional JWT claim verification.
+```
+
+Установка External Secrets Operator:
+
+
+```bash
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+
+helm upgrade --install external-secrets external-secrets/external-secrets \
+  --namespace vault \
+  --create-namespace \
+  --set installCRDs=true
+```
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm upgrade --install external-secrets external-secrets/external-secrets \
+  --namespace vault \
+  --create-namespace \
+  --set installCRDs=true
+Release "external-secrets" does not exist. Installing it now.
+NAME: external-secrets
+LAST DEPLOYED: Sun Aug  2 10:10:18 2026
+NAMESPACE: vault
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+external-secrets has been deployed successfully in namespace vault!
+
+In order to begin using ExternalSecrets, you will need to set up a SecretStore
+or ClusterSecretStore resource (for example, by creating a 'vault' SecretStore).
+
+More information on the different types of SecretStores and how to configure them
+can be found in our Github: https://github.com/external-secrets/external-secrets
+```
+
+Манифесты secret store + external-secret:
+
+```bash
+kubectl apply -f kubernetes-vault/secret-store.yaml
+kubectl apply -f kubernetes-vault/external-secret.yaml
+```
+
+Вывод:
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get externalsecret,secret -n vault
+NAME                                           STORETYPE     STORE           REFRESH INTERVAL   STATUS              READYLAST SYNC
+externalsecret.external-secrets.io/otus-cred   SecretStore   vault-backend   1h                 SecretSyncedError   False   
+
+NAME                                            TYPE                 DATA   AGE
+secret/external-secrets-webhook                 Opaque               4      8m58s
+secret/sh.helm.release.v1.external-secrets.v1   helm.sh/release.v1   1      8m58s
+secret/sh.helm.release.v1.vault.v1              helm.sh/release.v1   1      140m
+```
+
+Проверка:
+
+
+```bash
+kubectl get externalsecret otus-cred -n vault
+kubectl get secret otus-cred -n vault
+
+kubectl get secret otus-cred -n vault \
+  -o jsonpath='{.data.username}' | base64 -d; echo
+
+kubectl get secret otus-cred -n vault \
+  -o jsonpath='{.data.password}' | base64 -d; echo
+
+```
+
+Вывод:
+
+```bash
+ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get externalsecret otus-cred -n vault
+kubectl get secret otus-cred -n vault
+
+kubectl get secret otus-cred -n vault \
+  -o jsonpath='{.data.username}' | base64 -d; echo
+
+kubectl get secret externalsecret -n vault \
+  -o jsonpath='{.data.password}' | base64 -d; echo
+NAME        STORETYPE     STORE           REFRESH INTERVAL   STATUS         READY   LAST SYNC
+otus-cred   SecretStore   vault-backend   1h                 SecretSynced   True    2m1s
+NAME        TYPE     DATA   AGE
+otus-cred   Opaque   2      117s
+otus
+asajkjkahs
+
+```
