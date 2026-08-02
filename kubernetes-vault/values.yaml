@@ -1,0 +1,31 @@
+global:
+  enabled: true
+  tlsDisable: true
+
+injector:
+  enabled: true
+
+server:
+  enabled: true
+  replicas: 3
+
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: false
+    config: |
+      ui = true
+
+      listener "tcp" {
+        address         = "[::]:8200"
+        cluster_address = "[::]:8201"
+        tls_disable     = 1
+      }
+
+      storage "consul" {
+        address = "consul-consul-server.consul.svc.cluster.local:8500"
+        path    = "vault/"
+      }
+
+      service_registration "kubernetes" {}

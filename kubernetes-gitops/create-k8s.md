@@ -7,6 +7,7 @@
 | `master` | control plane | `192.168.122.101` |
 | `worker1` | worker | `192.168.122.102` |
 | `worker2` | worker | `192.168.122.103` |
+| `worker3` | worker | `192.168.122.104` |
 
 Используем Kubernetes 1.36, containerd и Flannel. Сеть узлов —
 `192.168.122.0/24`, сеть Pod — `10.244.0.0/16`.
@@ -17,6 +18,7 @@
 ssh ubuntu@192.168.122.101  # master
 ssh ubuntu@192.168.122.102  # worker1
 ssh ubuntu@192.168.122.103  # worker2
+ssh ubuntu@192.168.122.104  # worker3
 ```
 
 Если имя пользователя отличается, можно подключиться через uvtool:
@@ -25,6 +27,7 @@ ssh ubuntu@192.168.122.103  # worker2
 uvt-kvm ssh master
 uvt-kvm ssh worker1
 uvt-kvm ssh worker2
+uvt-kvm ssh worker3
 ```
 
 ## 2. Подготовка всех узлов
@@ -143,6 +146,12 @@ sudo kubeadm init \
 
 После завершения сохранить выведенную команду `kubeadm join`. Она понадобится
 для подключения worker-узлов.
+
+Для подключения воркер-ноды, если вдруг потеряли вывод прошлый:
+
+```bash
+kubeadm token create --print-join-command
+```
 
 Настроить kubectl для текущего пользователя:
 

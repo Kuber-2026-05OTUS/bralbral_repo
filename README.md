@@ -89,14 +89,14 @@ kubectl describe deployment angie-deployment
 - `kubectl get gatewayclass`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get gatewayclass
+kubectl get gatewayclass
 error: the server doesn't have a resource type "gatewayclass"
 ```
 
 - `kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo/kubernetes-networks$ kubectl get gatewayclass
+kubectl get gatewayclass
 No resources found
 
 ```
@@ -374,7 +374,7 @@ helm upgrade homework . \
 - `kubectl get pods -n homework`
 
 ```
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pods -n homework
+kubectl get pods -n homework
 NAME                                    READY   STATUS    RESTARTS   AGE
 homework-homework-app-cf6677d5f-4hf8j   1/1     Running   0          11m
 homework-homework-app-cf6677d5f-d49b8   1/1     Running   0          11m
@@ -692,7 +692,7 @@ kubectl apply -f deployment.yaml
 `kubectl get crd mysqls.otus.homework`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get crd mysqls.otus.homework
+kubectl get crd mysqls.otus.homework
 NAME                   CREATED AT
 mysqls.otus.homework   2026-06-28T08:08:12Z
 ```
@@ -700,7 +700,7 @@ mysqls.otus.homework   2026-06-28T08:08:12Z
 `kubectl get pods -n default -l app=mysql-operator`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pods -n default -l app=mysql-operator
+kubectl get pods -n default -l app=mysql-operator
 NAME                              READY   STATUS    RESTARTS   AGE
 mysql-operator-85f8745779-5bhf6   1/1     Running   0          9m1s
 ```
@@ -709,7 +709,7 @@ mysql-operator-85f8745779-5bhf6   1/1     Running   0          9m1s
 `kubectl logs -n default deployment/mysql-operator`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl logs -n default deployment/mysql-operator
+kubectl logs -n default deployment/mysql-operator
 /usr/local/lib/python3.10/site-packages/kopf/_core/reactor/running.py:179: FutureWarning: Absence of either namespaces or cluster-wide flag will become an error soon. For now, switching to the cluster-wide mode for backward compatibility.
   warnings.warn("Absence of either namespaces or cluster-wide flag will become an error soon."
 [2026-06-28 08:26:32,620] kopf._core.engines.a [INFO    ] Initial authentication has been initiated.
@@ -736,7 +736,7 @@ ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl logs -n default deployment/m
 
 ```bash
 
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl logs -n default deployment/mysql-demo
+kubectl logs -n default deployment/mysql-demo
 2026-06-28 08:27:32+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
 2026-06-28 08:27:33+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
 2026-06-28 08:27:33+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.46-1.el9 started.
@@ -791,7 +791,7 @@ Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skippin
 `kubectl get deploy -n default | grep mysql`
 
 ```
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get deploy -n default | grep mysq
+kubectl get deploy -n default | grep mysq
 mysql-demo       1/1     1            1           8m57s
 mysql-operator   1/1     1            1           10m
 ```
@@ -801,7 +801,7 @@ mysql-operator   1/1     1            1           10m
 `kubectl get svc -n default | grep mysql`
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get svc -n default | grep mysql
+kubectl get svc -n default | grep mysql
 mysql-demo   ClusterIP   None         <none>        3306/TCP   9m11s
 ```
 
@@ -810,7 +810,7 @@ mysql-demo   ClusterIP   None         <none>        3306/TCP   9m11s
 `kubectl get pvc -n default | grep mysql`
 
 ```
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pvc -n default | grep mysql
+kubectl get pvc -n default | grep mysql
 mysql-demo-pvc   Bound    mysql-demo-pv   1Gi        RWO            standard       <unset>                 9m27s
 ```
 
@@ -819,7 +819,7 @@ mysql-demo-pvc   Bound    mysql-demo-pv   1Gi        RWO            standard    
 
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pv | grep mysql
+kubectl get pv | grep mysql
 mysql-demo-pv   1Gi        RWO            Retain           Bound    default/mysql-demo-pvc   standard       <unset>                          9m54s
 ```
 
@@ -834,7 +834,7 @@ kubectl get pv | grep mysql
 ```
 
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pv | grep mysql
+kubectl get pv | grep mysql
 No resources found
 ```
 
@@ -1126,7 +1126,7 @@ query -> nginx_up
 
 
 ```
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ kubectl get pods -A
+kubectl get pods -A
 NAMESPACE     NAME                                                     READY   STATUS    RESTARTS      AGE
 homework      nginx-server-6df475bf9c-f6rgj                            2/2     Running   0             31m
 homework      nginx-server-6df475bf9c-s9zpv                            2/2     Running   0             31m
@@ -1323,7 +1323,7 @@ NOTES:
 ```
 
 ```
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm list -A
+helm list -A
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
 grafana         grafana         1               2026-07-04 17:11:26.607966677 +0100 BST deployed        grafana-10.5.15 12.3.1
 loki            loki            1               2026-07-04 16:45:35.578083342 +0100 BST deployed        loki-18.4.0     3.7.3
@@ -1362,7 +1362,7 @@ helm upgrade --install argocd argo/argo-cd \
 
 Вывод:
 ```bash
-ubuntu@ubuntu-MS-7C52:~/otus/bralbral_repo$ helm repo add argo https://argoproj.github.io/argo-helm
+helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
 helm upgrade --install argocd argo/argo-cd \
@@ -1450,3 +1450,178 @@ kubectl apply -f \
 ![argo-pods.png](kubernetes-gitops/argo-pods.png)
 
 ![running-apps.png](kubernetes-gitops/running-apps.png)
+
+
+
+### 11. kubernetes-vault
+
+
+#### Consul
+Установка [consul](https://github.com/hashicorp/consul-k8s.git)
+
+```bash
+helm repo add hashicorp https://helm.releases.hashicorp.com && \
+helm repo update && \
+helm upgrade --install consul hashicorp/consul \
+  --namespace consul \
+  --create-namespace \
+  --set server.replicas=3
+```
+
+Ошибка:
+```bash
+ubuntu@ubuntu-MS-7C52:~$ helm upgrade --install consul hashicorp/consul   --namespace consul   --create-namespace   --set server.replicas=3
+Release "consul" does not exist. Installing it now.
+Error: unable to continue with install: CustomResourceDefinition "gatewayclasses.gateway.networking.k8s.io" in namespace "" exists and cannot be imported into the current release: invalid ownership metadata; label validation error: missing key "app.kubernetes.io/managed-by": must be set to "Helm"; annotation validation error: missing key "meta.helm.sh/release-name": must be set to "consul"; annotation validation error: missing key "meta.helm.sh/release-namespace": must be set to "consul"
+```
+
+Нужно удалить ужеь существующий:
+
+```bash
+kubectl get crd -o name | grep 'gateway.networking.k8s.io' | xargs -r kubectl delete
+kubectl delete validatingadmissionpolicybinding \
+  safe-upgrades.gateway.networking.k8s.io
+
+kubectl delete validatingadmissionpolicy \
+  safe-upgrades.gateway.networking.k8s.io
+```
+
+
+Повторно пытаемся:
+
+
+```bash
+ubuntu@ubuntu-MS-7C52:~$ helm upgrade --install consul hashicorp/consul \
+  --namespace consul \
+  --create-namespace \
+  --set server.replicas=3
+Release "consul" has been upgraded. Happy Helming!
+NAME: consul
+LAST DEPLOYED: Sun Aug  2 07:42:53 2026
+NAMESPACE: consul
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+NOTES:
+Thank you for installing HashiCorp Consul!
+
+Your release is named consul.
+
+To learn more about the release, run:
+
+  $ helm status consul --namespace consul
+  $ helm get all consul --namespace consul
+
+Consul on Kubernetes Documentation:
+https://www.consul.io/docs/platform/k8s
+
+Consul on Kubernetes CLI Reference:
+https://www.consul.io/docs/k8s/k8s-cli
+```
+
+Удалить тейнт с worker2:
+```bash
+kubectl describe node worker2 | grep Taints
+```
+
+```bash
+kubectl taint node worker2 node-role=infra:NoSchedule-
+```
+
+#### Vault
+
+```bash
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
+
+helm upgrade --install vault hashicorp/vault \
+  --namespace vault \
+  --create-namespace \
+  --values ./kubernetes-vault/values.yaml
+```
+
+Вывод:
+
+
+```bash
+Release "vault" does not exist. Installing it now.
+NAME: vault
+LAST DEPLOYED: Sun Aug  2 07:52:41 2026
+NAMESPACE: vault
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+Thank you for installing HashiCorp Vault!
+
+Now that you have deployed Vault, you should look over the docs on using
+Vault with Kubernetes available here:
+
+https://developer.hashicorp.com/vault/docs
+
+
+Your release is named vault. To learn more about the release, try:
+
+  $ helm status vault
+  $ helm get manifest vault
+```
+
+
+Получить root token + unseal key для распечатывания:
+
+```
+kubectl exec -n vault vault-0 -c vault -- \
+  vault operator init
+```
+
+Вывод:
+
+
+```
+Unseal Key 1: woGeAiGwYOkb3NpEx7rcJbrob3Zzx06N+RRrSKuEzgun
+Unseal Key 2: Zz5iFAJVmMvBCezq9CasH9c1Srr2WvDWcIbtyP6jy12R
+Unseal Key 3: XF5d+khqUTPWgvWBA7vAFNVoGjqzIwkH7PQzd+ddmSGp
+Unseal Key 4: nFb2B7Cn51WnZRY6ciJfDYPLQpNQ2uBaNKWXBPpESsY0
+Unseal Key 5: OGreueUd9FEQqUDgori+Rn17xDHj//qYcYM5y6U+w59o
+
+Initial Root Token: <REDACTED>
+
+Vault initialized with 5 key shares and a key threshold of 3. Please securely
+distribute the key shares printed above. When the Vault is re-sealed,
+restarted, or stopped, you must supply at least 3 of these keys to unseal it
+before it can start servicing requests.
+
+Vault does not store the generated root key. Without at least 3 keys to
+reconstruct the root key, Vault will remain permanently sealed!
+
+It is possible to generate new unseal keys, provided you have a quorum of
+existing unseal keys shares. See "vault operator rekey" for more information.
+```
+
+С этим же токенами нужно повторить для vault-1, vault-2:
+
+```bash
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal woGeAiGwYOkb3NpEx7rcJbrob3Zzx06N+RRrSKuEzgun
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal Zz5iFAJVmMvBCezq9CasH9c1Srr2WvDWcIbtyP6jy12R
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal XF5d+khqUTPWgvWBA7vAFNVoGjqzIwkH7PQzd+ddmSGp
+```
+
+Вывод одного из разпечатываний:
+
+```bash
+Key                Value
+---                -----
+Seal Type          shamir
+Initialized        true
+Sealed             true
+Total Shares       5
+Threshold          3
+Unseal Progress    1/3
+Unseal Nonce       0d3373d5-540e-74b6-a510-1868a7dc0c95
+Version            2.0.3
+Build Date         2026-06-17T12:39:45Z
+Storage Type       consul
+HA Enabled         true
+```
+
+
