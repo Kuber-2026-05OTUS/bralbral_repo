@@ -1578,11 +1578,11 @@ kubectl exec -n vault vault-0 -c vault -- \
 
 
 ```
-Unseal Key 1: woGeAiGwYOkb3NpEx7rcJbrob3Zzx06N+RRrSKuEzgun
-Unseal Key 2: Zz5iFAJVmMvBCezq9CasH9c1Srr2WvDWcIbtyP6jy12R
-Unseal Key 3: XF5d+khqUTPWgvWBA7vAFNVoGjqzIwkH7PQzd+ddmSGp
-Unseal Key 4: nFb2B7Cn51WnZRY6ciJfDYPLQpNQ2uBaNKWXBPpESsY0
-Unseal Key 5: OGreueUd9FEQqUDgori+Rn17xDHj//qYcYM5y6U+w59o
+Unseal Key 1: SEAL1
+Unseal Key 2: SEAL2
+Unseal Key 3: SEAL3
+Unseal Key 4: SEAL4
+Unseal Key 5: SEAL5
 
 Initial Root Token: <REDACTED>
 
@@ -1601,9 +1601,9 @@ existing unseal keys shares. See "vault operator rekey" for more information.
 С этим же токенами нужно повторить для vault-1, vault-2:
 
 ```bash
-kubectl exec -n vault vault-0 -c vault -- vault operator unseal woGeAiGwYOkb3NpEx7rcJbrob3Zzx06N+RRrSKuEzgun
-kubectl exec -n vault vault-0 -c vault -- vault operator unseal Zz5iFAJVmMvBCezq9CasH9c1Srr2WvDWcIbtyP6jy12R
-kubectl exec -n vault vault-0 -c vault -- vault operator unseal XF5d+khqUTPWgvWBA7vAFNVoGjqzIwkH7PQzd+ddmSGp
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal SEAL1
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal SEAL2
+kubectl exec -n vault vault-0 -c vault -- vault operator unseal SEAL3
 ```
 
 Вывод одного из разпечатываний:
