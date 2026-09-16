@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homework
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: distroless-nginx
+  namespace: homework
+  labels:
+    app: distroless-nginx
+spec:
+  containers:
+    - name: nginx
+      image: kyos0109/nginx-distroless:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+  restartPolicy: Always
